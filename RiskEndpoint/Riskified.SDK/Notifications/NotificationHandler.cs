@@ -7,6 +7,7 @@ using Riskified.SDK.Logging;
 using Riskified.SDK.Model;
 using Riskified.SDK.Utils;
 using Riskified.SDK.Model.Internal;
+using System.Web;
 
 namespace Riskified.SDK.Notifications
 {
@@ -82,13 +83,15 @@ namespace Riskified.SDK.Notifications
                     //blocking call
                     var context = _listener.GetContext();
                     // reaches here when a connection was made
-                    var request = context.Request;
 
-                    if (!request.HasEntityBody)
-                    {
-                        LoggingServices.Error("Received HTTP notification with no body - shouldn't happen");
-                        continue;
-                    }
+                    //var request = context.Request;
+                    HttpRequestBase request = null;
+
+                    //if (!request.HasEntityBody)
+                    //{
+                    //    LoggingServices.Error("Received HTTP notification with no body - shouldn't happen");
+                    //    continue;
+                    //}
 
                     string responseString;
                     bool acionSucceeded = false;

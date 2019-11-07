@@ -6,7 +6,7 @@ using Riskified.SDK.Model.OrderElements;
 
 namespace Riskified.SDK.Model.Internal
 {
-    internal class Notification
+    public class Notification
     {
         [JsonProperty(PropertyName = "id", Required = Required.Always)]
         public string Id { get; set; }

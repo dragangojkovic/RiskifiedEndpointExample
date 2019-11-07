@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using Newtonsoft.Json;
 using Riskified.SDK.Exceptions;
 using Riskified.SDK.Logging;
@@ -17,7 +18,7 @@ namespace Riskified.SDK.Utils
         Text
     }
 
-    internal static class HttpUtils
+    public static class HttpUtils
     {
         private const string ShopDomainHeaderName = "X-RISKIFIED-SHOP-DOMAIN";
         private const string HmacHeaderName = "X-RISKIFIED-HMAC-SHA256";
@@ -233,18 +234,18 @@ namespace Riskified.SDK.Utils
         /// <returns>An object of type T containing data parsed from the request</returns>
         /// <exception cref="RiskifiedAuthenticationException">On missing/bad HMAC signature that doesn't match the given auth token</exception>
         /// <exception cref="RiskifiedTransactionException">On parsing error from string into the relevant object of type T</exception>
-        public static T ParsePostRequestToObject<T>(HttpListenerRequest request,string authToken) where T : class
+        public static T ParsePostRequestToObject<T>(HttpRequestBase request,string authToken) where T : class
         {
-            if (!request.HasEntityBody)
-            {
-                return null;
-            }
+            //if (!request.HasEntityBody)
+            //{
+            //    return null;
+            //}
             string postData = AuthorizeAndExtractContent(request, authToken);
             T obj = JsonStringToObject<T>(postData);
             return obj;
         }
 
-        private static string AuthorizeAndExtractContent(HttpListenerRequest request, string authToken)
+        private static string AuthorizeAndExtractContent(HttpRequestBase request, string authToken)
         {
             if (!string.IsNullOrEmpty(request.Headers[HmacHeaderName]))
             {
@@ -263,7 +264,7 @@ namespace Riskified.SDK.Utils
             if (stream != null)
             {
                 // Open the stream using a StreamReader for easy access.
-                var reader = new StreamReader(stream);
+                var reader = new StreamReader(stream, Encoding.UTF8);
                 // Read the content.
                 string streamData = reader.ReadToEnd();
                 reader.Close();
